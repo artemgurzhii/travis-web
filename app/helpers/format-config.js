@@ -1,5 +1,8 @@
 import { safe, formatConfig as formatConfigHelper } from 'travis/utils/helpers';
 
-export default function(config, options) {
-  return safe(formatConfigHelper(config));
+export function safeFormatConfig(config, options) {
+  console.log(config);
+  return JSON.stringify(config);
 }
+
+export default Ember.Helper.helper(safeFormatConfig);
