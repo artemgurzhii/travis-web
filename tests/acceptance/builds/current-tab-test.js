@@ -23,6 +23,9 @@ test('renders most recent repository without builds', function(assert) {
 });
 
 test('renders most recent repository and most recent build when builds present', function(assert) {
+
+  // so I guess we're assuming a single job and this is exacly what we need to test the config
+
   let repo =  server.create('repository', {slug: 'travis-ci/travis-web'});
   let branch = server.create('branch', {});
   let build = server.create('build', {number: '5', repository: repo, state: 'passed'});
@@ -42,12 +45,21 @@ test('renders most recent repository and most recent build when builds present',
   andThen(function() {
     assert.ok(currentRepoTab.currentTabActive, 'Current tab is active by default when loading dashboard');
     assert.ok(currentRepoTab.showsCurrentBuild, 'Shows current build');
+
+    window.buildTabs = buildTabs;
+    console.log(currentURL());
+    debugger
+    assert.ok(buildTabs.logTab.isShowing, 'Displays the log');
+    assert.ok(buildTabs.configTab.isHidden, 'Job config is hidden');
   });
 
   buildTabs.configTab.click();
 
   andThen(function() {
     assert.equal(buildTabs.configTab.contents, '[{\"language\":\"Hello\"}]');
+
+    assert.ok(buildTabs.configTab.isShowing, 'Displays the job config');
+    assert.ok(buildTabs.logTab.isHidden, 'Job log is hidden');
   });
   
   
